@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace OwinSelfHost
@@ -6,9 +7,9 @@ namespace OwinSelfHost
     public class ValueController : ApiController
     {
         // GET api/values 
-        public IEnumerable<string> Get()
+        public async Task<IEnumerable<string>> Get()
         {
-            return new string[] { "value1", "value2" };
+            return await Task.FromResult(new[] { "value1", "value2" });
         }
 
         // GET api/values/5 

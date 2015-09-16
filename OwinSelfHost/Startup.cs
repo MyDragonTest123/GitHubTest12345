@@ -1,5 +1,6 @@
 ﻿using System.Web.Http;
 using Owin;
+using Swashbuckle.Application;
 
 namespace OwinSelfHost
 {
@@ -11,6 +12,11 @@ namespace OwinSelfHost
         {
             // Configure Web API for self-host. 
             var config = new HttpConfiguration();
+
+            config
+                .EnableSwagger(c => c.SingleApiVersion("v1", "A title for your API"))
+                .EnableSwaggerUi();
+
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
