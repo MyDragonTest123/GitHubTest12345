@@ -1,4 +1,8 @@
-﻿using System.Web.Http;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Web;
+using System.Web.Http;
 using Owin;
 using Swashbuckle.Application;
 using WebApi.Hal;
@@ -11,10 +15,16 @@ namespace OwinSelfHost
         // parameter in the WebApp.Start method.
         public void Configuration(IAppBuilder appBuilder)
         {
-            // Configure Web API for self-host. 
+            appBuilder.Use<LoggingMiddleware>();
+            appBuilder.UseWebApi(GetWebApiConfig());
+        }
+
+        private static HttpConfiguration GetWebApiConfig()
+        {
             var config = new HttpConfiguration();
 
             config.Formatters.Add(new JsonHalMediaTypeFormatter(BuildHypermediaConfiguration()));
+
 
             config
                 .EnableSwagger(c => c.SingleApiVersion("v1", "A title for your API"))
@@ -23,10 +33,10 @@ namespace OwinSelfHost
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
+                defaults: new {id = RouteParameter.Optional}
                 );
 
-            appBuilder.UseWebApi(config);
+            return config;
         }
 
 
@@ -46,7 +56,7 @@ namespace OwinSelfHost
             //
             // Register things with the container
 
-            builder.Register(selfLink, new BeerHypermediaAppender(), helpLink);
+            builder.Register(selfLink, new ModelAppender(), helpLink);
 
             return builder.Build();
         }

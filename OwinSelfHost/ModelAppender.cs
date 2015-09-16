@@ -3,7 +3,7 @@ using WebApi.Hal;
 
 namespace OwinSelfHost
 {
-    public class BeerHypermediaAppender : IHypermediaAppender<Model>
+    public class ModelAppender : IHypermediaAppender<Model>
     {
         public void Append(Model resource, IEnumerable<Link> configured)
         {
