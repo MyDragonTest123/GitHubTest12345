@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Web;
 using System.Web.Http;
+using Metrics;
 using Owin;
 using Swashbuckle.Application;
 using WebApi.Hal;
@@ -21,6 +22,11 @@ namespace OwinSelfHost
 
         private static HttpConfiguration GetWebApiConfig()
         {
+            Metric.Config
+                .WithHttpEndpoint("http://localhost:9999/metrics/")
+                .WithAllCounters();
+             
+
             var config = new HttpConfiguration();
 
             config.Formatters.Add(new JsonHalMediaTypeFormatter(BuildHypermediaConfiguration()));
