@@ -7,9 +7,17 @@ namespace OwinSelfHost
     public class ValueController : ApiController
     {
         // GET api/values 
-        public async Task<IEnumerable<string>> Get()
+        public async Task<IEnumerable<Model>> Get()
         {
-            return await Task.FromResult(new[] { "value1", "value2" });
+            return await Task.FromResult(new[]
+            {
+                new Model
+                {
+                    FirstName = "Dragon",
+                    LastName = "Andrei",
+                    Age = 22
+                }
+            });
         }
 
         // GET api/values/5 

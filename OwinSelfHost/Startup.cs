@@ -1,6 +1,7 @@
 ﻿using System.Web.Http;
 using Owin;
 using Swashbuckle.Application;
+using WebApi.Hal;
 
 namespace OwinSelfHost
 {
@@ -13,6 +14,8 @@ namespace OwinSelfHost
             // Configure Web API for self-host. 
             var config = new HttpConfiguration();
 
+            config.Formatters.Add(new JsonHalMediaTypeFormatter(BuildHypermediaConfiguration()));
+
             config
                 .EnableSwagger(c => c.SingleApiVersion("v1", "A title for your API"))
                 .EnableSwaggerUi();
@@ -24,6 +27,28 @@ namespace OwinSelfHost
                 );
 
             appBuilder.UseWebApi(config);
+        }
+
+
+        private static IHypermediaResolver BuildHypermediaConfiguration()
+        {
+            var builder = Hypermedia.CreateBuilder();
+
+            //
+            // Define the self-links
+
+            var curie = new CuriesLink("beerco", "http://api.beerco.com/docs{?rel}");
+
+            var selfLink = curie.CreateLink<Model>("self", "~/api/value");
+
+            var helpLink = new Link("help", "http://www.iana.org/assignments/link-relations/link-relations.xhtml");
+
+            //
+            // Register things with the container
+
+            builder.Register(selfLink, new BeerHypermediaAppender(), helpLink);
+
+            return builder.Build();
         }
     }
 }
