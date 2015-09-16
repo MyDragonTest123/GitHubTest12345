@@ -4,6 +4,7 @@ using System.Web.Http;
 
 namespace OwinSelfHost
 {
+    [RoutePrefix("api/myController")]
     public class ValueController : ApiController
     {
         // GET api/values 
