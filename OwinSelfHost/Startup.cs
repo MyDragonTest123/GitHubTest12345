@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Web;
 using System.Web.Http;
 using Metrics;
 using Owin;
+using Owin.Metrics;
 using Swashbuckle.Application;
 using WebApi.Hal;
 
@@ -17,15 +19,20 @@ namespace OwinSelfHost
         public void Configuration(IAppBuilder appBuilder)
         {
             appBuilder.Use<LoggingMiddleware>();
-            appBuilder.UseWebApi(GetWebApiConfig());
+            appBuilder.UseWebApi(GetWebApiConfig(appBuilder));
         }
 
-        private static HttpConfiguration GetWebApiConfig()
+        private static HttpConfiguration GetWebApiConfig(IAppBuilder appBuilder)
         {
             Metric.Config
                 .WithHttpEndpoint("http://localhost:9999/metrics/")
-                .WithAllCounters();
-             
+                .WithReporting(r => r.WithConsoleReport(TimeSpan.FromSeconds(30)))
+                .WithOwin(middleware => appBuilder.Use(middleware), x => x
+                    .WithRequestMetricsConfig(c => c.WithAllOwinMetrics())
+                    .WithMetricsEndpoint());
+                //.WithInternalMetrics()
+                // .WithAllCounters();
+
 
             var config = new HttpConfiguration();
 
@@ -38,9 +45,9 @@ namespace OwinSelfHost
 
             config.MapHttpAttributeRoutes();
             config.Routes.MapHttpRoute(
-                name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
-                defaults: new {id = RouteParameter.Optional}
+                name: "ActionApi",
+                routeTemplate: "api/{controller}/{action}/{id}",
+                defaults: new { id = RouteParameter.Optional }
                 );
 
             return config;
