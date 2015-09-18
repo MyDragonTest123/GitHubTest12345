@@ -40,7 +40,11 @@ namespace OwinSelfHost
 
 
             config
-                .EnableSwagger(c => c.SingleApiVersion("v1", "A title for your API"))
+                .EnableSwagger(c =>
+                {
+                    c.SingleApiVersion("v1", "A title for your API");
+                    c.IncludeXmlComments("OwinSelfHost.XML");
+                })
                 .EnableSwaggerUi();
 
             config.MapHttpAttributeRoutes();
