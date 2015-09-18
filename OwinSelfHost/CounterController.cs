@@ -1,5 +1,7 @@
+using System.Threading;
 using System.Web.Http;
 using Metrics;
+using Timer = Metrics.Timer;
 
 namespace OwinSelfHost
 {
@@ -51,5 +53,17 @@ namespace OwinSelfHost
             return 0;
         }
 
+        private readonly Timer _timer = Metric.Timer("Counter.Timer", Unit.Requests);
+
+        [HttpGet]
+        public int Timer(string documentId, int sleep)
+        {
+            using (_timer.NewContext(documentId))
+            {
+                Thread.Sleep(sleep);
+
+                return 0;
+            }
+        }
     }
 }

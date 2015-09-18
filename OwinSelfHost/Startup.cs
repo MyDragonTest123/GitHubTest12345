@@ -26,10 +26,10 @@ namespace OwinSelfHost
         {
             Metric.Config
                 .WithHttpEndpoint("http://localhost:9999/metrics/")
-                .WithReporting(r => r.WithConsoleReport(TimeSpan.FromSeconds(30)))
-                .WithOwin(middleware => appBuilder.Use(middleware), x => x
-                    .WithRequestMetricsConfig(c => c.WithAllOwinMetrics())
-                    .WithMetricsEndpoint());
+                .WithReporting(r => r.WithConsoleReport(TimeSpan.FromSeconds(30)));
+                //.WithOwin(middleware => appBuilder.Use(middleware), x => x
+                //    .WithRequestMetricsConfig(c => c.WithAllOwinMetrics())
+                //    .WithMetricsEndpoint());
                 //.WithInternalMetrics()
                 // .WithAllCounters();
 
