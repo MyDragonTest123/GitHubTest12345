@@ -1,6 +1,4 @@
-THis is my test! Main change
-Feature 5
-New change
+Conflict with Feature 9
 
 using System.Threading;
 using System.Web.Http;
